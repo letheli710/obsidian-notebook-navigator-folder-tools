@@ -1,0 +1,543 @@
+/* Notebook Navigator Companion
+ * Every rule here is scoped to elements this plugin injects (.nnc-*) or to Notebook Navigator rows
+ * this plugin has marked ([data-nnc-fx]), so turning the plugin off restores the stock look.
+ */
+
+/* ===== 1. Dashed indent guides ===== */
+
+[data-nnc-guides] .nn-navitem.nn-folder .nn-navitem-indent-guide {
+    display: none; /* Upstream's own guides would double up with ours; tags and properties keep theirs */
+}
+
+.nnc-guides {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2; /* Above the selection and custom backgrounds; content paints later in the same layer */
+}
+
+/* Same look as Obsidian's own file explorer guides, so themes that restyle those restyle these too */
+.nnc-guide {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--nav-indentation-guide-width, 1px);
+    background-color: var(--nav-indentation-guide-color, var(--background-modifier-border));
+}
+
+/* ===== 2. Locate effect on the selected folder row ===== */
+
+.nn-virtual-nav-item:has([data-nnc-fx]) {
+    z-index: 3; /* Let the ring and glow overlap neighbouring rows */
+}
+
+[data-nnc-fx] {
+    --nnc-rainbow: linear-gradient(90deg, #ff6a88, #ff9966, #ffd86f, #7ee8a2, #5ec8ff, #8f7bff, #e56bff, #ff6a88);
+}
+
+/* Replace the stock selection fill with a darker mix of the folder's own color */
+.nn-navitem.nn-selected[data-nnc-fx]::after {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.nnc-fx {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    --nnc-fc: var(--interactive-accent);
+}
+
+.nnc-fx-bg {
+    position: absolute;
+    inset: 0 2px; /* Leaves room for the ring inside the row; the pane clips anything wider */
+    z-index: 1;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--nnc-fc) 30%, #0e0e12);
+}
+
+.theme-light .nnc-fx-bg {
+    background: color-mix(in srgb, var(--nnc-fc) 24%, #ffffff);
+}
+
+.theme-dark [data-nnc-fx] .nn-navitem-name:not(.nn-has-custom-color) {
+    color: #fff;
+}
+
+/* Marquee ring: a 2px band of flowing color, masked so only the ring shows */
+.nnc-fx-ring,
+.nnc-fx-glow {
+    display: none;
+    position: absolute;
+    inset: -2px 0;
+    padding: 2px;
+    border-radius: 8px;
+    background: var(--nnc-rainbow);
+    background-size: 200% 100%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: nnc-flow 2.4s linear infinite;
+    transition: opacity 0.6s;
+}
+
+.nnc-fx-ring {
+    z-index: 3;
+}
+
+.nnc-fx-glow {
+    z-index: 0;
+    filter: blur(6px);
+    opacity: 0.85;
+}
+
+.nnc-fx.nnc-m .nnc-fx-ring,
+.nnc-fx.nnc-m .nnc-fx-glow {
+    display: block;
+}
+
+@keyframes nnc-flow {
+    to {
+        background-position: 200% 0;
+    }
+}
+
+/* Corner brackets: lock in on arrival, then breathe outward */
+.nnc-fx-corners {
+    display: none;
+    position: absolute;
+    inset: -3px 0;
+    z-index: 4;
+    transition: opacity 0.6s;
+}
+
+.nnc-fx.nnc-c .nnc-fx-corners {
+    display: block;
+}
+
+.nnc-fx-corners i {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border: 2px solid #fff;
+    box-sizing: border-box;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 4px var(--interactive-accent));
+    animation: nnc-breathe 1.4s ease-in-out infinite;
+}
+
+.nnc-fx-corners i:nth-child(1) {
+    top: 0;
+    left: 0;
+    --dx: -1;
+    --dy: -1;
+    border-right: 0;
+    border-bottom: 0;
+    border-top-left-radius: 8px;
+}
+
+.nnc-fx-corners i:nth-child(2) {
+    top: 0;
+    right: 0;
+    --dx: 1;
+    --dy: -1;
+    border-left: 0;
+    border-bottom: 0;
+    border-top-right-radius: 8px;
+}
+
+.nnc-fx-corners i:nth-child(3) {
+    bottom: 0;
+    left: 0;
+    --dx: -1;
+    --dy: 1;
+    border-right: 0;
+    border-top: 0;
+    border-bottom-left-radius: 8px;
+}
+
+.nnc-fx-corners i:nth-child(4) {
+    bottom: 0;
+    right: 0;
+    --dx: 1;
+    --dy: 1;
+    border-left: 0;
+    border-top: 0;
+    border-bottom-right-radius: 8px;
+}
+
+.nnc-fx.nnc-arrive .nnc-fx-corners i {
+    animation:
+        nnc-lock 0.55s cubic-bezier(0.2, 1.3, 0.4, 1),
+        nnc-breathe 1.4s ease-in-out 0.55s infinite;
+}
+
+@keyframes nnc-breathe {
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(calc(var(--dx) * 2.5px), calc(var(--dy) * 2.5px));
+    }
+}
+
+@keyframes nnc-lock {
+    from {
+        transform: translate(calc(var(--dx) * 12px), calc(var(--dy) * 12px));
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+/* Auto fade: the ring and corners go, the darker background stays */
+.nnc-fx.nnc-faded .nnc-fx-ring,
+.nnc-fx.nnc-faded .nnc-fx-glow,
+.nnc-fx.nnc-faded .nnc-fx-corners {
+    opacity: 0;
+}
+
+.nnc-fx.nnc-notrans * {
+    transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nnc-fx-ring,
+    .nnc-fx-glow,
+    .nnc-fx-corners i,
+    .nnc-fx.nnc-arrive .nnc-fx-corners i {
+        animation: none !important;
+    }
+    .nnc-fx-ring,
+    .nnc-fx-glow,
+    .nnc-fx-corners {
+        transition: none;
+    }
+}
+
+/* ===== 3. Subfolder block in the list pane ===== */
+
+/*
+ * Lined up with Notebook Navigator's own list: the same scroller padding and item padding, so the
+ * "Up" arrow, folder icons, the header's folder icon and the "Today" group header share one left edge.
+ * Buttons are "quiet": no fill or border until hovered, like Notebook Navigator's header buttons.
+ * Selectors carry `.nnc-subfolders button` so they beat Obsidian's default `button:not(.clickable-icon)`.
+ */
+.nnc-subfolders {
+    --nnc-sf-pad: var(--nn-file-item-padding-horizontal, 12px);
+    flex: 0 0 auto;
+    max-height: 45%;
+    overflow-y: auto;
+    padding: 4px var(--nn-scroller-padding, 10px);
+    border-bottom: 1px solid var(--background-modifier-border);
+    font-size: var(--font-ui-small);
+}
+
+.nnc-sf-bar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    /* Buttons carry 4px of their own padding; together they land on the item padding */
+    padding-inline-start: calc(var(--nnc-sf-pad) - 4px);
+}
+
+.nnc-subfolders button.nnc-sf-back,
+.nnc-subfolders button.nnc-sf-toggle,
+.nnc-subfolders button.nnc-sf-row {
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.nnc-subfolders button.nnc-sf-back,
+.nnc-subfolders button.nnc-sf-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    width: auto;
+    height: 24px;
+    padding: 0 8px 0 4px;
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-normal, 400);
+    white-space: nowrap;
+}
+
+.nnc-subfolders button.nnc-sf-back.is-placeholder {
+    visibility: hidden;
+}
+
+.nnc-subfolders button.nnc-sf-back:hover,
+.nnc-subfolders button.nnc-sf-toggle:hover {
+    color: var(--text-normal);
+    background-color: var(--background-modifier-hover);
+}
+
+.nnc-subfolders button.nnc-sf-back:focus-visible,
+.nnc-subfolders button.nnc-sf-toggle:focus-visible,
+.nnc-subfolders button.nnc-sf-row:focus-visible {
+    box-shadow: 0 0 0 2px var(--interactive-accent);
+}
+
+.nnc-sf-back-icon,
+.nnc-sf-toggle-icon {
+    display: grid;
+}
+
+.nnc-sf-toggle-icon {
+    transition: transform 0.15s;
+}
+
+.nnc-sf-toggle[aria-expanded='true'] .nnc-sf-toggle-icon {
+    transform: rotate(90deg);
+}
+
+.nnc-sf-back-icon svg,
+.nnc-sf-toggle-icon svg,
+.nnc-sf-arrow svg {
+    width: 14px;
+    height: 14px;
+}
+
+.nnc-sf-list {
+    margin-top: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.nnc-subfolders button.nnc-sf-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    height: auto;
+    min-height: 40px;
+    padding: 4px var(--nnc-sf-pad);
+    border-radius: var(--nn-file-item-border-radius, var(--radius-m));
+    color: var(--text-normal);
+    text-align: start;
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-normal, 400);
+}
+
+.nnc-subfolders button.nnc-sf-row:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.nnc-sf-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    color: var(--icon-color);
+}
+
+.nnc-sf-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.nnc-sf-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.nnc-sf-name {
+    font-weight: var(--font-semibold);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nnc-sf-meta {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+    white-space: nowrap;
+}
+
+.nnc-sf-arrow {
+    flex: none;
+    display: grid;
+    color: var(--text-faint);
+}
+
+/* ===== 4. Notes from subfolders, grouped by direct subfolder ===== */
+
+/* Our list replaces Notebook Navigator's list body while "show notes from subfolders" is on */
+.nn-list-pane[data-nnc-boxlist] > .nn-list-pane-panel {
+    display: none;
+}
+
+.nnc-boxlist {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 4px var(--nn-scroller-padding, 10px) 16px;
+}
+
+/* A group: a quiet left square bracket "[" with the folder name on its top arm */
+.nnc-bl-group {
+    --nnc-bracket: color-mix(in oklch, var(--text-normal) 18%, transparent);
+    position: relative;
+    margin: 14px 0 8px;
+    padding: 4px 0 0 10px;
+}
+
+.nnc-bl-group.has-color {
+    --nnc-bracket: color-mix(in srgb, var(--nnc-box-color) 70%, transparent);
+}
+
+.nnc-bl-group::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 2px;
+    top: 0;
+    bottom: 0;
+    width: 7px;
+    border: 2px solid var(--nnc-bracket);
+    border-inline-end: none;
+    border-start-start-radius: 3px;
+    border-end-start-radius: 3px;
+    pointer-events: none;
+}
+
+.nnc-boxlist button.nnc-bl-label {
+    position: absolute;
+    inset-inline-start: 13px;
+    top: -8px;
+    z-index: 1;
+    width: auto;
+    height: 16px;
+    margin: 0;
+    padding: 0 4px;
+    border: none;
+    border-radius: var(--radius-s);
+    box-shadow: none;
+    background-color: var(--nn-theme-list-bg, var(--background-primary));
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: var(--font-ui-smaller);
+    line-height: 16px;
+    cursor: pointer;
+}
+
+.nnc-bl-group.has-color button.nnc-bl-label {
+    color: var(--nnc-box-color);
+}
+
+.nnc-boxlist button.nnc-bl-label:hover {
+    color: var(--text-normal);
+    text-decoration: underline;
+}
+
+/* The selected folder's own notes: no bracket */
+.nnc-bl-own {
+    margin: 4px 0 8px;
+}
+
+/* Note rows follow Notebook Navigator's layout: title, preview, "date • path" */
+.nnc-bl-note {
+    padding: var(--nn-file-padding-vertical, 8px) var(--nn-file-item-padding-horizontal, 12px);
+    border-radius: var(--nn-file-item-border-radius, 8px);
+    cursor: pointer;
+    outline: none;
+}
+
+.nnc-bl-note:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.nnc-bl-note:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--interactive-accent);
+}
+
+.nnc-bl-note.is-active {
+    background-color: var(--nn-selected-file-bg-color, var(--background-modifier-active-hover));
+}
+
+.nnc-bl-title {
+    font-weight: var(--nn-theme-file-name-font-weight, var(--font-semibold));
+    color: var(--nn-theme-file-name-color, var(--text-normal));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nnc-bl-preview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--nnc-preview-rows, 2);
+    overflow: hidden;
+    min-height: 1.4em; /* One line reserved while the preview loads; grows to the real line count */
+    color: var(--nn-theme-file-preview-color, var(--text-muted));
+    font-size: var(--nn-file-font-size, var(--font-ui-small));
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.nnc-bl-preview:empty {
+    min-height: 0;
+}
+
+.nnc-bl-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    color: var(--nn-theme-file-date-color, var(--text-faint));
+    font-size: var(--nn-file-small-size, var(--font-ui-smaller));
+    white-space: nowrap;
+}
+
+.nnc-bl-meta > span:first-child:not(.nnc-bl-path) {
+    flex: none;
+}
+
+/* Path: folder icon + a stronger color than the date, so the two read as separate items */
+.nnc-bl-path {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+    padding: 0 5px 0 3px;
+    border-radius: var(--radius-s);
+    background-color: color-mix(in srgb, var(--text-normal) 6%, transparent);
+    color: var(--text-muted);
+}
+
+.nnc-bl-path-icon {
+    flex: none;
+    display: grid;
+}
+
+.nnc-bl-path-icon svg {
+    width: 12px;
+    height: 12px;
+}
+
+.nnc-bl-path-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nnc-boxlist-empty {
+    padding: 16px;
+    color: var(--text-muted);
+}
+
+.nnc-bl-more {
+    height: 1px;
+}

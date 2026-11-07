@@ -1,0 +1,28 @@
+{
+  "name": "notebook-navigator-folder-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Add subfolder drill-down to the Notebook Navigator list pane, plus folder tree indent guides, a locate effect for the selected folder, and grouping of subfolder notes.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
+  },
+  "author": "letheli710",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.14.0",
+    "eslint-plugin-obsidianmd": "^0.5.1",
+    "globals": "^17.14.0",
+    "obsidian": "^1.14.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.1.0"
+  }
+}
