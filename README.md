@@ -1,5 +1,7 @@
 # Notebook Navigator Folder Tools
 
+**English** | [简体中文](README.zh-CN.md)
+
 Add subfolder drill-down to the Notebook Navigator list pane, plus folder tree indent guides, a locate effect for the selected folder, and grouping of subfolder notes.
 
 A companion for [Notebook Navigator](https://github.com/johansan/notebook-navigator). Notebook Navigator itself is never modified; turn this off any time to get the stock look back.
@@ -7,8 +9,6 @@ A companion for [Notebook Navigator](https://github.com/johansan/notebook-naviga
 > Not affiliated with Notebook Navigator or its author.
 
 ![Subfolders in the list pane and the navigation pane following along](assets/demo.gif)
-
-[中文说明](#中文说明)
 
 ## Features
 
@@ -112,28 +112,6 @@ npm test        # unit tests
 ```
 
 All Notebook Navigator interface names this plugin relies on are in `src/selectors.ts`.
-
-## 中文说明
-
-[Notebook Navigator](https://github.com/johansan/notebook-navigator) 的非官方配套插件,不修改 Notebook Navigator,关掉即恢复原样。
-
-**右栏显示子文件夹**:点击进入下一层,左栏同步展开;「Up」返回上一层。
-
-Notebook Navigator 的右栏原本只列笔记,想进子文件夹得回到左栏去点。现在右栏顶部会列出当前文件夹的子文件夹,并显示各自包含多少文件夹和笔记。点击就在右栏进入,同时左栏自动展开到这个文件夹、选中并滚动到可见位置,两栏始终一致。「Up」返回上一层,在顶层文件夹也保留位置,按钮不会跳来跳去。「Folders · N」可以收起子文件夹列表给笔记腾地方,并记住你的选择。隐藏文件夹、排序、颜色和图标都沿用 Notebook Navigator 的设置。
-
-**子文件夹笔记分组**:开启「显示子文件夹的笔记」时按子文件夹分组,深层笔记标出路径。
-
-Notebook Navigator 的「显示子文件夹的笔记」会把所有子文件夹的笔记混成一长串,看不出笔记在哪。开启分组后,当前文件夹自己的笔记在最前,后面每个直接子文件夹一组,左侧一个淡淡的方括号,文件夹名在上方,点名字可以进入该文件夹。更深层的笔记留在所属的组里,带路径小标签;只有你给文件夹设了颜色,分组才带颜色。笔记行沿用 Notebook Navigator 的预览、日期格式和排序。「分组列表中隐藏预览」只显示标题、日期和路径,只影响这个分组列表。大文件夹边滚动边分批绘制,预览只读取看得见的笔记。
-
-**层级线**:文件夹树的竖线,和 Obsidian 自带文件列表一样。
-
-文件夹层级一深,就容易看不清某一行属于哪个文件夹。每个展开的文件夹会从第一个子项到最后一个子项画一条实线,和 Obsidian 自带文件列表一样,颜色和粗细跟随主题;开启时会隐藏 Notebook Navigator 自己在文件夹行上的层级线,避免出现两套线。
-
-**定位效果**:彩虹边框和四角收拢,彩色文件夹里一眼找到当前位置,可分别关闭。
-
-给文件夹设了颜色以后,普通的选中高亮会和颜色混在一起。彩虹跑马灯是选中行外圈缓缓流动的彩虹边框,四角收拢是到达时四个角向文件夹收拢、之后轻轻呼吸。两个效果可以分别开关,都关掉就和原版 Notebook Navigator 完全一样。「自动淡出」让效果在到达 5 秒后消失;系统开启「减少动态效果」时动画会自动减弱。
-
-中文界面下设置页为中文。
 
 ## License
 
