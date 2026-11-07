@@ -1,9 +1,9 @@
-/* Notebook Navigator Companion
+/* Notebook Navigator Folder Tools
  * Every rule here is scoped to elements this plugin injects (.nnc-*) or to Notebook Navigator rows
  * this plugin has marked ([data-nnc-fx]), so turning the plugin off restores the stock look.
  */
 
-/* ===== 1. Dashed indent guides ===== */
+/* ===== 1. Indent guides ===== */
 
 [data-nnc-guides] .nn-navitem.nn-folder .nn-navitem-indent-guide {
     display: none; /* Upstream's own guides would double up with ours; tags and properties keep theirs */
@@ -21,6 +21,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
+    left: var(--nnc-guide-x, 0);
     width: var(--nav-indentation-guide-width, 1px);
     background-color: var(--nav-indentation-guide-color, var(--background-modifier-border));
 }
@@ -338,7 +339,7 @@
     display: grid;
     place-items: center;
     width: 16px;
-    color: var(--icon-color);
+    color: var(--nnc-sf-icon-color, var(--icon-color));
 }
 
 .nnc-sf-icon svg {

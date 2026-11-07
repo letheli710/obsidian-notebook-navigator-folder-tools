@@ -161,7 +161,7 @@ function renderBlock(
         icon.className = 'nnc-sf-icon';
         const color = host.getFolderColor(child.path);
         if (color) {
-            icon.style.color = color;
+            icon.setCssProps({ '--nnc-sf-icon-color': color });
         }
         host.renderIcon(icon, host.getFolderIcon(child.path), 'folder');
 

@@ -130,7 +130,7 @@ export class Controller {
                 applyBoxList(root, this.host, grouped, selected, this.version, settings.hidePreview);
                 applySubfolders(root, this.host, settings.subfolders, selected, this.version, { hideFolderList: grouped });
             } catch (error) {
-                console.error('[nn-companion] decoration failed', error);
+                console.error('[notebook-navigator-folder-tools] decoration failed', error);
             } finally {
                 observer.takeRecords();
                 observer.observe(root, OBSERVE_OPTIONS);

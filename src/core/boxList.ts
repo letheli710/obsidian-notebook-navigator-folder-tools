@@ -203,7 +203,7 @@ function renderList(
 ): void {
     disconnect(list);
     list.replaceChildren();
-    list.style.setProperty('--nnc-preview-rows', String(appearance.previewRows));
+    list.setCssProps({ '--nnc-preview-rows': String(appearance.previewRows) });
 
     const groups = buildGroups(host, folder, appearance);
     const total = groups.reduce((sum, g) => sum + g.notes.length, 0);
@@ -248,7 +248,7 @@ function renderList(
             const color = host.getFolderColor(group.folder.path);
             container.className = `nnc-bl-group${color ? ' has-color' : ''}`;
             if (color) {
-                container.style.setProperty('--nnc-box-color', color);
+                container.setCssProps({ '--nnc-box-color': color });
             }
             const label = createEl('button');
             label.type = 'button';

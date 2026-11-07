@@ -120,9 +120,9 @@ export function applyLocate(
     if (fx.dataset.color !== color) {
         fx.dataset.color = color;
         if (color) {
-            fx.style.setProperty('--nnc-fc', color);
+            fx.setCssProps({ '--nnc-fc': color });
         } else {
-            fx.style.removeProperty('--nnc-fc');
+            fx.setCssProps({ '--nnc-fc': '' });
         }
     }
 }

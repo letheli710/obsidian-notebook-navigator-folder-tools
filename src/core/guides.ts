@@ -144,7 +144,7 @@ function writeRowGuides(row: MeasuredRow, levels: number[], indent: number): voi
         ...xs.map(x => {
             const line = createSpan();
             line.className = 'nnc-guide';
-            line.style.left = `${x}px`;
+            line.setCssProps({ '--nnc-guide-x': `${x}px` });
             return line;
         })
     );
