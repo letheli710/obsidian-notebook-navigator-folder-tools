@@ -1,6 +1,6 @@
 {
   "name": "notebook-navigator-folder-tools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Add subfolder drill-down to the Notebook Navigator list pane, plus folder tree indent guides, a locate effect for the selected folder, and grouping of subfolder notes.",
   "main": "main.js",
