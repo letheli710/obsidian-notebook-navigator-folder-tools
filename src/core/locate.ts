@@ -3,6 +3,8 @@ import { ARRIVAL_WINDOW_MS, AUTO_FADE_MS } from '../settings';
 
 const FX_CLASS = 'nnc-fx';
 const ROW_ATTR = 'data-nnc-fx';
+/** Set on the virtual list item that holds the selected row, so it can be raised above its neighbours */
+const HOST_ATTR = 'data-nnc-fx-host';
 
 export interface LocateOptions {
     marquee: boolean;
@@ -22,6 +24,7 @@ function cleanupRow(row: HTMLElement): void {
 
 export function removeLocate(root: HTMLElement): void {
     root.querySelectorAll<HTMLElement>(`[${ROW_ATTR}]`).forEach(cleanupRow);
+    root.querySelectorAll<HTMLElement>(`[${HOST_ATTR}]`).forEach(host => host.removeAttribute(HOST_ATTR));
 }
 
 function createFx(): HTMLElement {
@@ -83,10 +86,21 @@ export function applyLocate(
         }
     });
 
+    // Virtual list items are recycled, so the host mark is recomputed on every pass
+    const host = selected ? (selected as HTMLElement).closest<HTMLElement>(SEL.virtualNavItem) : null;
+    scroller.querySelectorAll<HTMLElement>(`[${HOST_ATTR}]`).forEach(el => {
+        if (el !== host) {
+            el.removeAttribute(HOST_ATTR);
+        }
+    });
+
     if (!selected) {
         return;
     }
     const row: HTMLElement = selected;
+    if (host && !host.hasAttribute(HOST_ATTR)) {
+        host.setAttribute(HOST_ATTR, '');
+    }
     const path = row.dataset.path ?? '';
 
     let fx = row.querySelector<HTMLElement>(`:scope > .${FX_CLASS}`);

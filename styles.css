@@ -28,7 +28,7 @@
 
 /* ===== 2. Locate effect on the selected folder row ===== */
 
-.nn-virtual-nav-item:has([data-nnc-fx]) {
+.nn-virtual-nav-item[data-nnc-fx-host] {
     z-index: 3; /* Let the ring and glow overlap neighbouring rows */
 }
 
@@ -36,10 +36,11 @@
     --nnc-rainbow: linear-gradient(90deg, #ff6a88, #ff9966, #ffd86f, #7ee8a2, #5ec8ff, #8f7bff, #e56bff, #ff6a88);
 }
 
-/* Replace the stock selection fill with a darker mix of the folder's own color */
-.nn-navitem.nn-selected[data-nnc-fx]::after {
-    background-color: transparent !important;
-    box-shadow: none !important;
+/* Replace the stock selection fill with a darker mix of the folder's own color.
+ * The repeated class outranks Notebook Navigator's `.nn-navitem.nn-selected::after` by specificity alone. */
+.nn-navitem.nn-navitem.nn-selected[data-nnc-fx]::after {
+    background-color: transparent;
+    box-shadow: none;
 }
 
 .nnc-fx {
@@ -201,7 +202,7 @@
 }
 
 .nnc-fx.nnc-notrans * {
-    transition: none !important;
+    transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -209,7 +210,7 @@
     .nnc-fx-glow,
     .nnc-fx-corners i,
     .nnc-fx.nnc-arrive .nnc-fx-corners i {
-        animation: none !important;
+        animation: none;
     }
     .nnc-fx-ring,
     .nnc-fx-glow,

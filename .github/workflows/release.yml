@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write # needed to sign the build attestation
+  attestations: write
 
 jobs:
   release:
@@ -23,6 +25,14 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      # Proves the release files were built by this workflow from this repository
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            main.js
+            styles.css
 
       - name: Create draft release
         env:
